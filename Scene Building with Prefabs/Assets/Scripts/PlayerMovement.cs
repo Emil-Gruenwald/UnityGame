@@ -13,8 +13,12 @@ public class PlayerMovement : MonoBehaviour
 
     public float jumpForce;
     public float jumpcooldown;
+    // public float dashForce;
+    // public float dashcooldown;
     public float airMultiplier;
     bool readyToJump;
+    bool readyToDash;
+    bool Dash;
 
     public KeyCode jumpKey = KeyCode.Space;
     public KeyCode sprintKey = KeyCode.LeftShift;
@@ -50,6 +54,8 @@ public class PlayerMovement : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
         readyToJump = true;
+        readyToDash = true;
+        Dash = false;
     }
     private void Update()
     {
@@ -63,6 +69,11 @@ public class PlayerMovement : MonoBehaviour
             rb.drag = groundDrag;
         else
             rb.drag = 0;
+
+        if (Dash) 
+        {
+            rb.AddForce(orientation.forward * 10, ForceMode.Impulse);
+        }
     }
     private void FixedUpdate()
     {
@@ -79,6 +90,15 @@ public class PlayerMovement : MonoBehaviour
             Jump();
 
             Invoke(nameof(ResetJump), jumpcooldown);
+        }
+
+        if (Input.GetKey(KeyCode.E) && readyToDash) 
+        {
+            readyToDash = false;
+
+            initiateDash();
+
+            Invoke(nameof(ResetDash), 2);
         }
     }
     private void StateHandler()
@@ -149,6 +169,20 @@ public class PlayerMovement : MonoBehaviour
     {
         readyToJump = true;
         exitSlope = false;
+    }
+    private void initiateDash() 
+    {
+        Dash = true;
+        Invoke(nameof(cancelDash), 0.3f);
+        // rb.AddForce(orientation.forward * 100, ForceMode.Impulse);
+    }
+    private void cancelDash() 
+    {
+        Dash = false;
+    }
+    private void ResetDash()
+    {
+        readyToDash = true;
     }
     private bool OnSlope()
     {
