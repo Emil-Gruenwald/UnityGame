@@ -145,7 +145,7 @@ public class PlayerMovement : MonoBehaviour
         
             rb.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
             
-        rb.useGravity = !OnSlope();
+        rb.useGravity = true; //!OnSlope();
     }
     private void SpeedControl()
     {
