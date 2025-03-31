@@ -17,6 +17,7 @@ public class PlayerMovement : MonoBehaviour
     // public float dashcooldown;
     public float airMultiplier;
     public int coyoteJump;
+    bool doubleJump;
     bool readyToJump;
     bool readyToDash;
     bool Dash;
@@ -56,6 +57,7 @@ public class PlayerMovement : MonoBehaviour
         rb.freezeRotation = true;
         readyToJump = true;
         readyToDash = true;
+        doubleJump = true;
         Dash = false;
         coyoteJump = 0;
     }
@@ -71,6 +73,7 @@ public class PlayerMovement : MonoBehaviour
         {
             rb.drag = groundDrag;
             coyoteJump = 0;
+            doubleJump = true;
         }
         else 
         {
@@ -91,9 +94,14 @@ public class PlayerMovement : MonoBehaviour
     {
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
-        if (Input.GetKey(jumpKey) && readyToJump && (grounded || coyoteJump <= 20))
+        if (Input.GetKey(jumpKey) && ((readyToJump && (grounded || coyoteJump <= 20)) || (!grounded && doubleJump && coyoteJump >= 60)))
         {
             readyToJump = false;
+
+            if (coyoteJump >= 40) 
+            {
+                doubleJump = false;
+            }
 
             Jump();
 
