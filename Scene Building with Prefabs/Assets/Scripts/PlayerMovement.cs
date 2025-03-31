@@ -16,6 +16,7 @@ public class PlayerMovement : MonoBehaviour
     // public float dashForce;
     // public float dashcooldown;
     public float airMultiplier;
+    public int coyoteJump;
     bool readyToJump;
     bool readyToDash;
     bool Dash;
@@ -56,6 +57,7 @@ public class PlayerMovement : MonoBehaviour
         readyToJump = true;
         readyToDash = true;
         Dash = false;
+        coyoteJump = 0;
     }
     private void Update()
     {
@@ -65,10 +67,16 @@ public class PlayerMovement : MonoBehaviour
         SpeedControl();
         StateHandler();
 
-        if (grounded)
+        if (grounded) 
+        {
             rb.drag = groundDrag;
-        else
+            coyoteJump = 0;
+        }
+        else 
+        {
             rb.drag = 0;
+            coyoteJump ++;
+        }
 
         if (Dash) 
         {
@@ -83,7 +91,7 @@ public class PlayerMovement : MonoBehaviour
     {
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
-        if (Input.GetKey(jumpKey) && readyToJump && grounded)
+        if (Input.GetKey(jumpKey) && readyToJump && (grounded || coyoteJump <= 20))
         {
             readyToJump = false;
 
@@ -160,6 +168,7 @@ public class PlayerMovement : MonoBehaviour
     }
     private void Jump()
     {
+        
         exitSlope = true;
         rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
 
